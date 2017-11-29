@@ -8,16 +8,22 @@
 
 import UIKit
 
-class BusinessesViewController: UIViewController {
+class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    
+    @IBOutlet weak var businessView: UITableView!
     
     var businesses: [Business]!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        businessView.delegate = self;
+        businessView.dataSource = self;
+        
         Business.searchWithTerm(term: "Thai", completion: { (businesses: [Business]?, error: Error?) -> Void in
             
             self.businesses = businesses
+            self.businessView.reloadData()
             if let businesses = businesses {
                 for business in businesses {
                     print(business.name!)
@@ -39,6 +45,18 @@ class BusinessesViewController: UIViewController {
          }
          */
         
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.businesses?.count ?? 0;
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = businessView.dequeueReusableCell(withIdentifier: "BusinessCell", for: indexPath) as! BusinessCell;
+        
+        cell.Business = businesses[indexPath.row];
+        
+        return cell;
     }
     
     override func didReceiveMemoryWarning() {
