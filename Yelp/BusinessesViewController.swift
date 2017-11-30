@@ -72,7 +72,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     func updateSearchResults(for searchController: UISearchController) {
         if let searchText = searchController.searchBar.text {
             filteredBusinesses = searchText.isEmpty ? businesses : businesses.filter({ (businessData: Business) -> Bool in
-                return businessData.name?.contains(searchText) != nil;
+                return businessData.name?.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil;
             })
             
             businessView.reloadData();
@@ -80,7 +80,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.businesses?.count ?? 0;
+        return self.filteredBusinesses?.count ?? 0;
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
